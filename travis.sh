@@ -6,4 +6,4 @@ mkdir build
 cd build
 cmake ..
 make
-ctest -N
+make test

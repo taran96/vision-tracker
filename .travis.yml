@@ -1,14 +1,12 @@
+language: cpp
 
+os:
+  - linux
+  - osx
 
-install:
-# /usr/bin/gcc is 4.6 always, but gcc-X.Y is available.
-- if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
-# /usr/bin/clang is 3.4, lets override with modern one.
-- if [ "$CXX" = "clang++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
-- echo ${PATH}
-- echo ${CXX}
-- ${CXX} --version
-- ${CXX} -v
+compiler:
+  - gcc
+  - clang
 
 addons:
   apt:
@@ -24,13 +22,26 @@ addons:
     - g++-4.9
     - clang-3.7
     - valgrind
-    - libopencv-dev
+    - llibgtk2.0-dev
+    - pkg-config
+    - libavcodec-dev
+    - libavformat-dev
+    - libswscale-dev
 
-os:
-  - linux
-language: cpp
-compiler:
-  - gcc
-  - clang
+
+install:
+# /usr/bin/gcc is 4.6 always, but gcc-X.Y is available.
+- if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
+# /usr/bin/clang is 3.4, lets override with modern one.
+- if [ "$CXX" = "clang++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
+- echo ${PATH}
+- echo ${CXX}
+- ${CXX} --version
+- ${CXX} -v
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew tap homebrew/science; fi
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install opencv3; fi
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install opencv3; fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
 
 script: ./travis.sh
