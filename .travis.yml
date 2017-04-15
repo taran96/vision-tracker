@@ -32,3 +32,5 @@ language: cpp
 compiler:
   - gcc
   - clang
+
+script: ./travis.sh
