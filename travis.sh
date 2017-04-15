@@ -2,8 +2,8 @@
 # Script for Building and testing on travis-ci
 
 
-mkdir build || true
+mkdir build
 cd build
 cmake ..
 make
-make test
+ctest -N
