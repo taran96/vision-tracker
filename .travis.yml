@@ -11,6 +11,11 @@ compiler:
   - gcc
   - clang
 
+cache:
+  directories:
+    - $HOME/Library/Caches/Homebrew
+    - $TRAVIS_BUILD_DIR/opencv/
+
 notifications:
   email: false
 
@@ -43,6 +48,7 @@ install:
 - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
 - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew tap homebrew/science; fi
 - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install --verbose opencv3 --with-contrib || true; fi
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cache || true; fi
 - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew ln opencv3 --force || true; fi
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then git clone --branch 3.2.0 https://github.com/opencv/opencv.git; fi
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd opencv; fi

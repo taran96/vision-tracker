@@ -34,6 +34,7 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
                       "${gmock_SOURCE_DIR}/include")
 endif()
 
-add_subdirectory( visiontracker )
+# Testing
 enable_testing()
-add_test( NAME Calibration COMMAND Test)
+
+add_subdirectory( visiontracker )
