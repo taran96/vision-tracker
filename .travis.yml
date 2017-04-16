@@ -48,4 +48,6 @@ install:
                                                     -D CMAKE_INSTALL_PREFIX=/usr/local
                                                     -D WITH_QT=ON -D WITH_OPENGL=ON .. ; fi
 
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd ../..; fi
+
 script: ./travis.sh
