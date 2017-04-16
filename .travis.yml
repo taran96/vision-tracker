@@ -45,7 +45,7 @@ install:
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd opencv; fi
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then mkdir build && cd build; fi
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cmake -D CMAKE_BUILD_TYPE=RELEASE
-                                                    -D CMAKE_INSTALL_PREFIX=/usr/local 
-                                                    -D WITH_QT=ON -D WITH_OPENGL=ON; fi
+                                                    -D CMAKE_INSTALL_PREFIX=/usr/local
+                                                    -D WITH_QT=ON -D WITH_OPENGL=ON .. ; fi
 
 script: ./travis.sh
