@@ -8,6 +8,9 @@ compiler:
   - gcc
   - clang
 
+notifications:
+  email: false
+
 addons:
   apt:
     # List of whitelisted in travis packages for ubuntu-precise can be found here:
@@ -27,6 +30,7 @@ addons:
     - libavformat-dev
     - libswscale-dev
     - build-essential
+    - qt5-default
 
 install:
 # /usr/bin/gcc is 4.6 always, but gcc-X.Y is available.
@@ -39,7 +43,7 @@ install:
 - ${CXX} -v
 - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
 - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew tap homebrew/science; fi
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install opencv3 --with-contrib; fi
+- travis_wait 60 if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install opencv3 --with-contrib; fi
 - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew ln opencv3 --force; fi
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then git clone --branch 3.2.0 https://github.com/opencv/opencv.git; fi
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd opencv; fi
@@ -48,6 +52,11 @@ install:
                                                     -D CMAKE_INSTALL_PREFIX=/usr/local
                                                     -D WITH_QT=ON -D WITH_OPENGL=ON .. ; fi
 
+- travis_wait 60 if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then make -j4; fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo make install; fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf'; fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo ldconfig; fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then echo "OpenCV installed."; fi
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd ../..; fi
 
 script: ./travis.sh
