@@ -2,7 +2,6 @@ language: cpp
 
 os:
   - linux
-  - osx
 
 sudo: required
 dist: trusty
@@ -13,7 +12,7 @@ compiler:
 
 cache:
   directories:
-    #- $HOME/Library/Caches/Homebrew
+    # Save opencv build
     - $TRAVIS_BUILD_DIR/opencv/
 
 notifications:
@@ -21,10 +20,6 @@ notifications:
 
 addons:
   apt:
-    # List of whitelisted in travis packages for ubuntu-precise can be found here:
-    #   https://github.com/travis-ci/apt-package-whitelist/blob/master/ubuntu-precise
-    # List of whitelisted in travis apt-sources:
-    #   https://github.com/travis-ci/apt-source-whitelist/blob/master/ubuntu.json
     sources:
     - ubuntu-toolchain-r-test
     - llvm-toolchain-precise-3.7
@@ -38,42 +33,32 @@ addons:
 
 install:
 # /usr/bin/gcc is 4.6 always, but gcc-X.Y is available.
-- if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
 # /usr/bin/clang is 3.4, lets override with modern one.
-- if [ "$CXX" = "clang++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
-- echo ${PATH}
-- echo ${CXX}
-- ${CXX} --version
-- ${CXX} -v
-#- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
-#- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew tap homebrew/science; fi
-#- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install --verbose opencv3 --with-contrib || true; fi
-#- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cache || true; fi
-#- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew ln opencv3 --force || true; fi
-#- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then git clone --branch 3.2.0 https://github.com/opencv/opencv.git || true; fi
-#- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd opencv; fi
-#- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then mkdir build && cd build; fi
-#- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cmake -D CMAKE_BUILD_TYPE=RELEASE
-#                                                    -D CMAKE_INSTALL_PREFIX=/usr/local
-#                                                    -D WIgiTH_QT=ON -D WITH_OPENGL=ON .. ; fi
+  - if [ "$CXX" = "clang++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
+  - echo ${PATH}
+  - echo ${CXX}
+  - ${CXX} --version
+  - ${CXX} -v
 
-#- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then make -j2; fi
-#- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo make install; fi
-#- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf'; fi
-#- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo ldconfig; fi
-#- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then echo "OpenCV installed."; fi
-#- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd ../..; fi
-- git clone --branch 3.2.0 https://github.com/opencv/opencv.git || true
-- cd opencv
-- mkdir build || true
-- cd build
-- cmake -D CMAKE_BUILD_TYPE=RELEASE
-        -D CMAKE_INSTALL_PREFIX=/usr/local
-        -D WIgiTH_QT=ON -D WITH_OPENGL=ON ..
-- make -j2
-- sudo make install
-- sudo sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf'
-- sudo ldconfig
-- echo "OpenCV installed."
-- cd ../..
-script: ./travis.sh
+# Getting opencv
+  - git clone --branch 3.2.0 https://github.com/opencv/opencv.git || true
+  - cd opencv
+  - mkdir build || true
+  - cd build
+  - cmake -D CMAKE_BUILD_TYPE=RELEASE
+          -D CMAKE_INSTALL_PREFIX=/usr/local
+          -D WIgiTH_QT=ON -D WITH_OPENGL=ON ..
+  - make -j2
+  - sudo make install
+  - sudo sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf'
+  - sudo ldconfig
+  - echo "OpenCV installed."
+  - cd ../..
+
+script:
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make
+  - make test
