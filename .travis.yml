@@ -22,7 +22,6 @@ addons:
     - g++-4.9
     - clang-3.7
     - valgrind
-    - llibgtk2.0-dev
     - pkg-config
     - libavcodec-dev
     - libavformat-dev
