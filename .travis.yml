@@ -27,7 +27,7 @@ addons:
     - libavcodec-dev
     - libavformat-dev
     - libswscale-dev
-
+    - build-essential
 
 install:
 # /usr/bin/gcc is 4.6 always, but gcc-X.Y is available.
@@ -40,8 +40,13 @@ install:
 - ${CXX} -v
 - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
 - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew tap homebrew/science; fi
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install opencv3; fi
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install opencv3; fi
-- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install opencv3 --with-contrib; fi
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew ln opencv3 --force; fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then git clone --branch 3.2.0 https://github.com/opencv/opencv.git; fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd opencv; fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then mkdir build && cd build; fi
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cmake -D CMAKE_BUILD_TYPE=RELEASE \
+                                                    -D CMAKE_INSTALL_PREFIX=/usr/local \
+                                                    -D WITH_QT=ON -D WITH_OPENGL=ON; fi
 
 script: ./travis.sh
