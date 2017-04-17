@@ -32,7 +32,6 @@ addons:
     - valgrind
     - pkg-config
     - build-essential
-    # - qt5-default # causes errors with making
 
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
@@ -50,7 +49,7 @@ install:
   - cd build
   - cmake -D CMAKE_BUILD_TYPE=RELEASE
           -D CMAKE_INSTALL_PREFIX=/usr/local
-          -D WITH_OPENGL=ON 
+          -D WITH_OPENGL=ON
           -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules ..
   - make -j5
   - sudo make install
