@@ -1,5 +1,6 @@
 language: cpp
 
+# want to include osx in the future
 os:
   - linux
 
