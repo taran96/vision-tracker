@@ -42,3 +42,6 @@ build
 
 # Google Tests
 googletest-*
+
+# Atom Editor files
+.clang_complete
