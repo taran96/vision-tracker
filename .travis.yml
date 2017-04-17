@@ -15,6 +15,7 @@ cache:
   directories:
     # Save opencv build
     - $TRAVIS_BUILD_DIR/opencv/
+    - $TRAVIS_BUILD_DIR/opencv_contrib/
 
 notifications:
   email: false
@@ -31,6 +32,7 @@ addons:
     - valgrind
     - pkg-config
     - build-essential
+    - qt5-default
 
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
