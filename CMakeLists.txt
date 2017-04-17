@@ -38,3 +38,5 @@ endif()
 enable_testing()
 
 add_subdirectory( visiontracker )
+add_custom_command(OUTPUT runtests COMMAND pwd && cp ../visiontracker/test/runtests.sh visiontracker/test/runtests.sh && chmod +x visiontracker/test/runtests.sh)
+add_custom_target(check COMMAND pwd && cp ../visiontracker/test/runtests.sh visiontracker/test/runtests.sh && chmod +x visiontracker/test/runtests.sh && visiontracker/test/runtests.sh)
