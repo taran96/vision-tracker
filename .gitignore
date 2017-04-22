@@ -45,3 +45,10 @@ googletest-*
 
 # Atom Editor files
 .clang_complete
+
+# Xcode development
+xcode/
+
+# Logs
+logs/
+*.log
