@@ -50,7 +50,12 @@ void CalibrationData::read(const cv::FileNode &node) {
   node["tvecs"] >> tvecs;
 }
 
-void CalibrationData::setDefault() {}
+void CalibrationData::setDefault() {
+  cameraMatrix = cv::Mat::eye(3, 3, CV_64F);
+  distCoeffs =  cv::Mat::eye(3, 3, CV_64F);
+  rvecs = std::vector<cv::Mat>(0);
+  tvecs = std::vector<cv::Mat>(0);
+}
 
 void CalibrationData::createKnownBoardPositions(cv::Size boardSize,
                                                 float squareEdgeLength,
@@ -164,10 +169,15 @@ void CalibrationData::calibrate(cv::VideoCapture &vid) {
       break;
     }
   }
+}
 
-  getChessboardCorners(calibrationImages, imagePoints, false);
-  createKnownBoardPositions(boardSize, SQUAREDIMENSION, worldPoints[0]);
-  // std::vector<cv::Mat> rVectors, tVectors;
+
+void CalibrationData::calibrate(const std::vector<cv::Mat> & matv) {
+  cameraMatrix = cv::Mat::eye(3, 3, CV_64F);
+  cameraMatrix.at<double>(0, 0) = 1.0;
+  Point3fVec worldPoints(1);
+  getChessboardCorners(matv, imagePoints, false);
+  createKnownBoardPositions(boardSize, SQUAREDIMENSION, worldPoints);
   distCoeffs = cv::Mat::zeros(8, 1, CV_64F);
   cv::calibrateCamera(worldPoints, imagePoints, boardSize, cameraMatrix,
                       distCoeffs, rvecs, tvecs);

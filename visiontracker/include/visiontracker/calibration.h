@@ -68,6 +68,7 @@ public:
                             Point2fMat &allFoundCorners,
                             bool showResults = false);
   void calibrate(cv::VideoCapture &vid);
+  void calibrate(const std::vector<cv::Mat> &matv);
   cv::Mat getCameraMatrix();
   cv::Mat getDistCoeffs();
 }; // CalibrationData
