@@ -45,3 +45,6 @@ googletest-*
 
 # Atom Editor files
 .clang_complete
+
+# Xcode Development
+xcode/
