@@ -14,7 +14,8 @@ using namespace vt;
 /* Settings */
 
 void Settings::write(cv::FileStorage &fs) const {
-  fs << "{"
+  fs << "settings"
+     << "{"
      << "boardSize" << boardSize << "squareSize" << squareSize << "}";
 }
 
@@ -28,6 +29,21 @@ void Settings::setDefault() {
   squareSize = SQUAREDIMENSION;
 }
 
+void Settings::open(const cv::String filename) {
+  cv::FileStorage fs(filename, cv::FileStorage::READ);
+  read(fs["settings"]);
+  fs.release();
+}
+
+void Settings::save(const cv::String filename) {
+  cv::FileStorage fs(filename, cv::FileStorage::WRITE);
+  write(fs);
+  fs.release();
+}
+
+bool Settings::operator==(const Settings &s) const {
+  return boardSize == s.boardSize && squareSize == s.squareSize;
+}
 cv::Size Settings::getBoardSize() { return boardSize; }
 
 /* CalibrationData */
@@ -38,7 +54,8 @@ CalibrationData::CalibrationData() {}
 CalibrationData::~CalibrationData() {}
 
 void CalibrationData::write(cv::FileStorage &fs) const {
-  fs << "{"
+  fs << "calibration"
+     << "{"
      << "distanceCoeffs" << distCoeffs << "cameraMatrix" << cameraMatrix
      << "rvecs" << rvecs << "tvecs" << tvecs << "}";
 }
@@ -52,7 +69,7 @@ void CalibrationData::read(const cv::FileNode &node) {
 
 void CalibrationData::setDefault() {
   cameraMatrix = cv::Mat::eye(3, 3, CV_64F);
-  distCoeffs =  cv::Mat::eye(3, 3, CV_64F);
+  distCoeffs = cv::Mat::eye(3, 3, CV_64F);
   rvecs = std::vector<cv::Mat>(0);
   tvecs = std::vector<cv::Mat>(0);
 }
@@ -144,18 +161,12 @@ void CalibrationData::calibrate(cv::VideoCapture &vid) {
     case 13: // enter key
       // start calib
       if (calibrationImages.size() > 15) {
-        std::cout << "[INFO] Entering Calibration" << std::endl;
-        std::cout << "[INFO] Getting Chessboard Corners" << std::endl;
         getChessboardCorners(calibrationImages, imagePoints, false);
-        std::cout << "[INFO] Creating known board positions" << std::endl;
         createKnownBoardPositions(boardSize, SQUAREDIMENSION, worldPoints[0]);
-        // std::vector<cv::Mat> rVectors, tVectors;
         distCoeffs = cv::Mat::zeros(8, 1, CV_64F);
-        std::cout << "[INFO] Calibrating Camera" << std::endl;
         worldPoints.resize(imagePoints.size(), worldPoints[0]);
         cv::calibrateCamera(worldPoints, imagePoints, boardSize, cameraMatrix,
                             distCoeffs, rvecs, tvecs);
-        std::cout << "[INFO] Done Calibrating" << std::endl;
       } else {
         std::cerr << "[ERROR] Not enough frames" << std::endl;
       }
@@ -171,8 +182,7 @@ void CalibrationData::calibrate(cv::VideoCapture &vid) {
   }
 }
 
-
-void CalibrationData::calibrate(const std::vector<cv::Mat> & matv) {
+void CalibrationData::calibrate(const std::vector<cv::Mat> &matv) {
   cameraMatrix = cv::Mat::eye(3, 3, CV_64F);
   cameraMatrix.at<double>(0, 0) = 1.0;
   Point3fVec worldPoints(1);
@@ -183,6 +193,24 @@ void CalibrationData::calibrate(const std::vector<cv::Mat> & matv) {
                       distCoeffs, rvecs, tvecs);
 }
 
+void CalibrationData::open(const cv::String filename) {
+  cv::FileStorage fs(filename, cv::FileStorage::READ);
+  read(fs["calibration"]);
+  fs.release();
+}
+
+void CalibrationData::save(const cv::String filename) {
+  cv::FileStorage fs(filename, cv::FileStorage::WRITE);
+  write(fs);
+  fs.release();
+}
+
 cv::Mat CalibrationData::getDistCoeffs() { return distCoeffs; }
 
 cv::Mat CalibrationData::getCameraMatrix() { return cameraMatrix; }
+
+bool CalibrationData::operator==(const CalibrationData &a) const {
+  return cv::countNonZero(a.cameraMatrix != cameraMatrix) &&
+         (a.boardSize == boardSize) &&
+         cv::countNonZero(a.distCoeffs != distCoeffs);
+}

@@ -11,10 +11,8 @@
 #ifndef CALIBRATION_H
 #define CALIBRATION_H
 
-#include <string>
-#include <vector>
-
 #include <opencv2/opencv.hpp>
+#include <vector>
 
 // Defining real dimensions in meters
 #define SQUAREDIMENSION 0.025f
@@ -34,16 +32,17 @@ public:
 };
 
 class Settings : public Serializable {
-protected:
+public:
   cv::Size boardSize;
   float squareSize;
 
-public:
   void write(cv::FileStorage &fs) const;
   void read(const cv::FileNode &node);
   void setDefault();
-
+  void open(const cv::String filename);
+  void save(const cv::String filename);
   cv::Size getBoardSize();
+  bool operator==(const Settings &a) const;
 }; // Settings
 
 class CalibrationData : public Serializable {
@@ -52,10 +51,8 @@ public:
   std::vector<cv::Mat> calibrationImages, rvecs, tvecs;
   std::string filename;
   Point2fMat imagePoints;
-  // std::vector<std::vector<cv::Point3f> > worldPoints;
   cv::Size boardSize;
 
-public:
   CalibrationData(Settings &s);
   CalibrationData();
   ~CalibrationData();
@@ -71,6 +68,10 @@ public:
   void calibrate(const std::vector<cv::Mat> &matv);
   cv::Mat getCameraMatrix();
   cv::Mat getDistCoeffs();
+  void open(const cv::String filename);
+  void save(const cv::String filename);
+  bool operator==(const CalibrationData &a) const;
 }; // CalibrationData
+
 }; // namespace vt
 #endif
