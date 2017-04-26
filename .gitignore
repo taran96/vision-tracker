@@ -48,3 +48,7 @@ googletest-*
 
 # Xcode Development
 xcode/
+
+# Vim files
+*.swp
+*.swo
