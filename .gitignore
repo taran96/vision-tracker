@@ -52,3 +52,5 @@ xcode/
 # Vim files
 *.swp
 *.swo
+.color_coded
+.ycm_extra_conf.py
